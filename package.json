@@ -1,0 +1,20 @@
+{
+  "name": "precastmanagementweb",
+  "version": "1.0.0",
+  "description": "Precast management website",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --env-file=.env server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aps_sdk/authentication": "^1.0.0",
+    "@aps_sdk/model-derivative": "^1.2.0",
+    "@aps_sdk/oss": "^1.2.2",
+    "express": "^5.1.0",
+    "express-formidable": "^1.2.0"
+  }
+}
