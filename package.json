@@ -14,7 +14,10 @@
     "@aps_sdk/authentication": "^1.0.0",
     "@aps_sdk/model-derivative": "^1.2.0",
     "@aps_sdk/oss": "^1.2.2",
+    "@tailwindcss/cli": "^4.1.17",
     "express": "^5.1.0",
-    "express-formidable": "^1.2.0"
+    "express-formidable": "^1.2.0",
+    "firebase": "^12.5.0",
+    "tailwindcss": "^4.1.17"
   }
 }

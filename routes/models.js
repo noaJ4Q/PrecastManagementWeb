@@ -1,6 +1,6 @@
 import express from 'express';
 import formidable from 'express-formidable';
-import { listObjects, uploadObject, translateObject, getManifest } from '../services/aps.js'
+import { listObjects, uploadObject, translateObject, getManifest, urnify } from '../services/aps.js'
 
 let router = express.Router();
 
