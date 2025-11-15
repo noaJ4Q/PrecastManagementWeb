@@ -6,25 +6,12 @@ html {
   font-family: ArtifaktElement;
 }
 
-#header,
-#preview,
-#overlay {
-  position: absolute;
-  width: 100%;
-}
-
 #header {
   height: 3em;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-}
-
-#preview,
-#overlay {
-  top: 3em;
-  bottom: 0;
 }
 
 #overlay {

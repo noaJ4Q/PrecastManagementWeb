@@ -1,4 +1,5 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import { PORT } from './config.js';
 import authRouter from './routes/auth.js';
 import modelsRouter from './routes/models.js';
@@ -7,6 +8,7 @@ import manageRouter from './routes/manage.js';
 const app = express();
 
 app.use(express.static('wwwroot'))
+app.use(bodyParser.json());
 app.use(authRouter);
 app.use(modelsRouter);
 app.use(manageRouter);

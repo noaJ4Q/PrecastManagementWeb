@@ -1,6 +1,6 @@
 import express from 'express';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAGNFR9W5IjuE2KpUFjVtIt9yZKnUsa2uQ",
@@ -22,8 +22,21 @@ router.get('/api/manage/rfidTag', async (req, res, next) => {
     const querySnapshot = await getDocs(collection(db, "rfid_tag"));
     querySnapshot.forEach((doc) => {
       console.log(doc.id, " => ", doc.data());
-      res.json({ id: doc.id, data: doc.data() });
     })
+  } catch (err) {
+    next(err);
+  }
+})
+
+router.post('/api/manage/rfidTag', async (req, res, next) => {
+  console.log(req.body);
+  try {
+    const docRef = await addDoc(collection(db, "rfid_tag"), {
+      created_datetime: new Date(),
+      tag_id: req.body.tagId,
+      used: false
+    });
+    res.json({ id: docRef.id });
   } catch (err) {
     next(err);
   }

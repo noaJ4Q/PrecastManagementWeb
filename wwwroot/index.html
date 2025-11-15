@@ -9,16 +9,16 @@
   <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.css">
   <link rel="stylesheet" href="/main.css">
   <link rel="stylesheet" href="/output.css">
-  <title>Autodesk Platform Services: Simple Viewer</title>
+  <title>Precast Management Web</title>
 </head>
 
 <body class="bg-gray-50 font-sans">
   <!-- Header -->
-  <header class="bg-white shadow-sm border-b border-gray-200" id="">
+  <header class="bg-white shadow-sm border-b border-gray-200">
     <div class="flex items-center justify-between px-6 py-4">
       <div class="flex items-center space-x-4">
-        <img class="logo h-8" src="https://cdn.autodesk.io/logo/black/stacked.png" alt="Autodesk Platform Services">
-        <h1 class="title text-xl font-semibold text-gray-800">Simple Viewer</h1>
+        <!-- <img class="logo h-8" src="https://cdn.autodesk.io/logo/black/stacked.png" alt="Autodesk Platform Services"> -->
+        <h1 class="title text-xl font-semibold text-gray-800">Precast Management Web</h1>
       </div>
       <div class="flex items-center space-x-3">
         <select name="models" id="models"
@@ -37,7 +37,7 @@
       <nav class="p-4">
         <ul class="space-y-1">
           <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-blue-50 rounded-lg">
+            <a href="#dashboard" class="flex items-center px-4 py-3 text-gray-700 bg-blue-50 rounded-lg">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
@@ -47,13 +47,14 @@
             </a>
           </li>
           <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+            <a href="#elements"
+              class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                 </path>
               </svg>
-              Projects
+              Elements
             </a>
           </li>
           <li>
@@ -63,11 +64,12 @@
                   d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
                 </path>
               </svg>
-              Team
+              Reports
             </a>
           </li>
           <li>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+            <a href="#tags"
+              class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
@@ -75,7 +77,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
               </svg>
-              Settings
+              Tags
             </a>
           </li>
         </ul>
@@ -85,11 +87,12 @@
 
     <!-- Main Viewer Area -->
     <main class="flex-1 p-6 overflow-auto">
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 h-full">
+      <!-- Dashboard -->
+      <section class="bg-white rounded-lg shadow-sm border border-gray-200 h-full mb-6" id="dashboard">
         <div class="border-b border-gray-200 px-6 py-4">
-          <h2 class="text-lg font-semibold text-gray-800">Construction project</h2>
+          <h2 class="text-lg font-semibold text-gray-800">Dashboard</h2>
         </div>
-        <div id="preview" class="h-[calc(100%-57px)] relative">
+        <div id="preview-off" class="h-[calc(100%-57px)] relative">
           <!-- Autodesk -->
           <div class="absolute inset-0 flex items-center justify-center text-gray-400">
             <div class="text-center">
@@ -102,12 +105,103 @@
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- Elements -->
+      <section class="bg-white rounded-lg shadow-sm border border-gray-200 min-h-[500px] flex flex-col mb-6"
+        id="elements">
+        <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-gray-800">Elements</h2>
+          <button id="addElementBtn"
+            class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
+            Add element
+          </button>
+        </div>
+        <div class="flex-1 p-6 overflow-auto">
+          <div id="elementsList" class="space-y-2">
+            <!-- Los elementos se agregarán aquí dinámicamente -->
+            <p class="text-gray-400 text-sm">No elements added yet</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tags -->
+      <section class="bg-white rounded-lg shadow-sm border border-gray-200 min-h-[500px] flex flex-col mb-6" id="tags">
+        <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-gray-800">Tags</h2>
+          <button id="addTagBtn"
+            class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
+            Add tag
+          </button>
+        </div>
+        <div class="flex-1 p-6 overflow-auto">
+          <div id="tagsList" class="space-y-2">
+            <!-- Los tags se agregarán aquí dinámicamente -->
+            <p class="text-gray-400 text-sm">No tags added yet</p>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 
-  <div id="preview"></div>
   <div id="overlay"></div>
+
+  <!-- Modal add element -->
+  <div id="addElementModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+      <div class="border-b border-gray-200 px-6 py-4">
+        <h3 class="text-lg font-semibold text-gray-800">Add New Element</h3>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Prefabricated Name</label>
+          <input type="text" id="elementNameInput" placeholder="Enter prefabricated name"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Associated Tag</label>
+          <select id="elementTagSelect"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Select a tag</option>
+          </select>
+        </div>
+      </div>
+      <div class="border-t border-gray-200 px-6 py-4 flex justify-end space-x-3">
+        <button id="cancelElementBtn"
+          class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          Cancel
+        </button>
+        <button id="confirmElementBtn"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          Add Element
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal add tag -->
+  <div id="addTagModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+      <div class="border-b border-gray-200 px-6 py-4">
+        <h3 class="text-lg font-semibold text-gray-800">Add New Tag</h3>
+      </div>
+      <div class="p-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Tag ID</label>
+        <input type="text" id="tagIdInput" placeholder="Enter tag ID"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div class="border-t border-gray-200 px-6 py-4 flex justify-end space-x-3">
+        <button id="cancelTagBtn"
+          class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          Cancel
+        </button>
+        <button id="confirmTagBtn"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          Add Tag
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.js"></script>
   <script src="/main.js" type="module"></script>
