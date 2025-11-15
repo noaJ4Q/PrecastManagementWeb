@@ -16,21 +16,6 @@ function hideModal(modal) {
   modal.classList.add('hidden');
 }
 
-async function loadRfidTags() {
-  console.log('Loading RFID tags...');
-  try {
-    const resp = await fetch('/api/manage/rfidTag');
-    if (!resp.ok) {
-      throw new Error(await resp.text());
-    }
-    const tags = await resp.json();
-    console.log('RFID Tags:', tags);
-  } catch (err) {
-    alert('Could not load RFID tags. See the console for more details.');
-    console.error(err);
-  }
-}
-
 // Event listeners to open modals
 addTagBtn.addEventListener('click', () => {
   tagIdInput.value = '';
@@ -45,18 +30,18 @@ addElementBtn.addEventListener('click', () => {
 
 // Event listeners to confirm actions
 confirmTagBtn.addEventListener('click', async () => {
-  const tagId = tagIdInput.value.trim();
-  if (!tagId) {
+  const rfidId = tagIdInput.value.trim();
+  if (!rfidId) {
     alert('Please enter a valid Tag ID.');
     return;
   }
   try {
-    const resp = await fetch('/api/manage/rfidTag', {
+    const resp = await fetch('/api/components/rfidTag', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ tagId })
+      body: JSON.stringify({ rfidId })
     });
     if (!resp.ok) {
       throw new Error(await resp.text());

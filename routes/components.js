@@ -17,29 +17,37 @@ const db = getFirestore(app);
 
 let router = express.Router();
 
-router.get('/api/manage/rfidTag', async (req, res, next) => {
+router.get('/api/components/rfidTag', async (req, res, next) => {
   try {
     const querySnapshot = await getDocs(collection(db, "rfid_tag"));
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
-    })
+    const tags = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(tags);
   } catch (err) {
     next(err);
   }
-})
+});
 
-router.post('/api/manage/rfidTag', async (req, res, next) => {
-  console.log(req.body);
+router.post('/api/components/rfidTag', async (req, res, next) => {
   try {
     const docRef = await addDoc(collection(db, "rfid_tag"), {
       created_datetime: new Date(),
-      tag_id: req.body.tagId,
+      rfid_id: req.body.rfidId,
       used: false
     });
     res.json({ id: docRef.id });
   } catch (err) {
     next(err);
   }
-})
+});
+
+router.get('/api/components/element', async (req, res, next) => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "precast_element"));
+    const elements = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(elements);
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default router;
