@@ -1,6 +1,6 @@
 import express from 'express';
 import formidable from 'express-formidable';
-import { listObjects, uploadObject, translateObject, getManifest, urnify } from '../services/aps.js'
+import { listObjects, getObject, uploadObject, translateObject, getManifest, urnify } from '../services/aps.js'
 
 let router = express.Router();
 
@@ -47,9 +47,27 @@ router.post('/api/models', formidable({ maxFileSize: Infinity }), async function
     return;
   }
   try {
+    console.log(`Uploading model file: ${file.name} (${file.path})`);
+    // Check if the object already exists
+    const existingObject = await getObject(file.name);
+    if (existingObject) {
+      res.json({
+        name: existingObject.objectKey,
+        urn: urnify(existingObject.objectId),
+        isFirstLoad: false
+      })
+      return;
+    }
+
     const obj = await uploadObject(file.name, file.path);
     await translateObject(urnify(obj.objectId), req.fields['model-zip-entrypoint']);
-    res.json({ name: obj.objectKey, urn: urnify(obj.objectId) });
+
+    res.json({
+      name: obj.objectKey,
+      urn: urnify(obj.objectId),
+      isFirstLoad: true
+    });
+    // }
   } catch (err) {
     next(err);
   }

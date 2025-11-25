@@ -48,6 +48,21 @@ export async function listObjects() {
   return objects;
 }
 
+export async function getObject(objectName) {
+  await ensureBucketExists(APS_BUCKET);
+  const accessToken = await getInternalToken();
+  try {
+    const obj = await ossClient.getObjectDetails(APS_BUCKET, objectName, { accessToken });
+    return obj;
+  } catch (err) {
+    if (err.axiosError.response.status === 404) {
+      return null;
+    } else {
+      throw err;
+    }
+  }
+}
+
 export async function uploadObject(objectName, filePath) {
   await ensureBucketExists(APS_BUCKET);
   const accessToken = await getInternalToken();

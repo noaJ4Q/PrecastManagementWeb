@@ -1,4 +1,5 @@
 // import * as Autodesk from "@types/forge-viewer";
+import './ModelExtractorExtension.js';
 
 async function getAccessToken(callback) {
   try {
@@ -18,7 +19,10 @@ export function initViewer(container) {
   return new Promise((resolve, reject) => {
     Autodesk.Viewing.Initializer({ env: 'AutodeskProduction', getAccessToken }, () => {
       const config = {
-        extensions: ['Autodesk.DocumentBrowser']
+        extensions: [
+          'Autodesk.DocumentBrowser',
+          'ModelExtractorExtension'
+        ]
       };
       const viewer = new Autodesk.Viewing.GuiViewer3D(container, config);
       viewer.start();
