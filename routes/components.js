@@ -1,6 +1,6 @@
 import express from 'express';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, doc, writeBatch } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAGNFR9W5IjuE2KpUFjVtIt9yZKnUsa2uQ",
@@ -49,5 +49,23 @@ router.get('/api/components/element', async (req, res, next) => {
     next(err);
   }
 });
+
+router.post('/api/components/elements', async (req, res, next) => {
+  try {
+    const elements = req.body.elements;
+    const batch = writeBatch(db);
+
+    elements.forEach(element => {
+      const elementRef = doc(db, "precast_element", 'element_' + element.dbId);
+      batch.set(elementRef, element);
+    });
+
+    await batch.commit();
+    res.json({ message: 'Elements added successfully.' });
+
+  } catch (err) {
+    next(err);
+  }
+})
 
 export default router;
