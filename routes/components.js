@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, addDoc, doc, writeBatch } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAGNFR9W5IjuE2KpUFjVtIt9yZKnUsa2uQ",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "precastmanagement-7edec.firebaseapp.com",
   projectId: "precastmanagement-7edec",
   storageBucket: "precastmanagement-7edec.firebasestorage.app",
@@ -40,10 +40,14 @@ router.post('/api/components/rfidTag', async (req, res, next) => {
   }
 });
 
-router.get('/api/components/element', async (req, res, next) => {
+router.get('/api/components/elements', async (req, res, next) => {
   try {
-    const querySnapshot = await getDocs(collection(db, "precast_element"));
+    const modelName = 'racbasicsampleproject.rvt';
+    const projectsRef = doc(db, 'projects', modelName);
+    const elementsCollRef = collection(projectsRef, 'elements');
+    const querySnapshot = await getDocs(elementsCollRef);
     const elements = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
     res.json(elements);
   } catch (err) {
     next(err);
@@ -53,10 +57,11 @@ router.get('/api/components/element', async (req, res, next) => {
 router.post('/api/components/elements', async (req, res, next) => {
   try {
     const elements = req.body.elements;
+    const modelName = req.body.modelName;
     const batch = writeBatch(db);
 
     elements.forEach(element => {
-      const elementRef = doc(db, "precast_element", 'element_' + element.dbId);
+      const elementRef = doc(db, "projects/" + modelName + '/elements', 'element_' + element.dbId);
       batch.set(elementRef, element);
     });
 

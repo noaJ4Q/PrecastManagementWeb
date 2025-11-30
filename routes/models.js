@@ -47,7 +47,6 @@ router.post('/api/models', formidable({ maxFileSize: Infinity }), async function
     return;
   }
   try {
-    console.log(`Uploading model file: ${file.name} (${file.path})`);
     // Check if the object already exists
     const existingObject = await getObject(file.name);
     if (existingObject) {

@@ -5,7 +5,7 @@ let router = express.Router();
 router.get('/', async (req, res) => {
 
   const tags = await loadRfidTags();
-  const elements = await loadProcastElements();
+  const elements = await loadPrecastElements();
 
   res.status(200).render(
     'userHome.ejs',
@@ -14,14 +14,11 @@ router.get('/', async (req, res) => {
 })
 
 async function loadRfidTags() {
-  console.log('Loading RFID tags...');
   try {
-    console.log('Fetching from API...');
     const resp = await fetch('http://localhost:8080/api/components/rfidTag');
     if (!resp.ok) {
       throw new Error(await resp.text());
     }
-    console.log('API response received');
     return await resp.json();
   } catch (err) {
     console.error(err);
@@ -29,15 +26,12 @@ async function loadRfidTags() {
   }
 }
 
-async function loadProcastElements() {
-  console.log('Loading Precast Elements...');
+async function loadPrecastElements() {
   try {
-    console.log('Fetching from API...');
-    const resp = await fetch('http://localhost:8080/api/components/element');
+    const resp = await fetch('http://localhost:8080/api/components/elements');
     if (!resp.ok) {
       throw new Error(await resp.text());
     }
-    console.log('API response received');
     return await resp.json();
   } catch (err) {
     console.error(err);
