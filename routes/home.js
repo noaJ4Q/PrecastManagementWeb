@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 async function loadRfidTags() {
   try {
-    const resp = await fetch('http://localhost:8080/api/components/rfidTag');
+    const resp = await fetch('http://localhost:8080/api/components/rfidTags');
     if (!resp.ok) {
       throw new Error(await resp.text());
     }

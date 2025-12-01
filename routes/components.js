@@ -1,6 +1,6 @@
 import express from 'express';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, addDoc, doc, writeBatch } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, getDoc, addDoc, doc, writeBatch, updateDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -17,7 +17,7 @@ const db = getFirestore(app);
 
 let router = express.Router();
 
-router.get('/api/components/rfidTag', async (req, res, next) => {
+router.get('/api/components/rfidTags', async (req, res, next) => {
   try {
     const querySnapshot = await getDocs(collection(db, "rfid_tag"));
     const tags = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -27,7 +27,7 @@ router.get('/api/components/rfidTag', async (req, res, next) => {
   }
 });
 
-router.post('/api/components/rfidTag', async (req, res, next) => {
+router.post('/api/components/rfidTags', async (req, res, next) => {
   try {
     const docRef = await addDoc(collection(db, "rfid_tag"), {
       created_datetime: new Date(),
@@ -54,6 +54,23 @@ router.get('/api/components/elements', async (req, res, next) => {
   }
 });
 
+router.get('/api/components/elements/:dbId', async (req, res, next) => {
+  try {
+    const dbId = req.params.dbId;
+    const modelName = 'racbasicsampleproject.rvt';
+    const elementRef = doc(db, 'projects/' + modelName + '/elements', 'element_' + dbId);
+    const elementSnap = await getDoc(elementRef);
+
+    if (elementSnap.exists()) {
+      res.json({ id: elementSnap.id, ...elementSnap.data() });
+    } else {
+      res.status(404).json({ error: 'Element not found' });
+    }
+  } catch (err) {
+    next(err);
+  }
+})
+
 router.post('/api/components/elements', async (req, res, next) => {
   try {
     const elements = req.body.elements;
@@ -67,6 +84,22 @@ router.post('/api/components/elements', async (req, res, next) => {
 
     await batch.commit();
     res.json({ message: 'Elements added successfully.' });
+
+  } catch (err) {
+    next(err);
+  }
+})
+
+router.patch('/api/components/elements/:dbId', async (req, res, next) => {
+  try {
+    const dbId = req.params.dbId;
+    const updatedData = req.body;
+
+    const modelName = 'racbasicsampleproject.rvt';
+    const elementRef = doc(db, 'projects/' + modelName + '/elements', 'element_' + dbId);
+
+    await updateDoc(elementRef, updatedData);
+    res.json({ message: 'Element updated successfully.' });
 
   } catch (err) {
     next(err);

@@ -58,7 +58,7 @@
               Elements
             </a>
           </li>
-          <li>
+          <!-- <li>
             <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -67,7 +67,7 @@
               </svg>
               Reports
             </a>
-          </li>
+          </li> -->
           <li>
             <a href="#tags"
               class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
@@ -113,10 +113,6 @@
         id="elements">
         <div class="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h2 class="text-lg font-semibold text-gray-800">Elements</h2>
-          <button id="addElementBtn"
-            class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
-            Add element
-          </button>
         </div>
         <div class="flex-1 p-6 overflow-auto">
           <div id="elementsList">
@@ -127,8 +123,6 @@
                     <th class="text-left py-3 px-3 text-gray-600 font-semibold w-16">#</th>
                     <th class="text-left py-3 px-3 text-gray-600 font-semibold">Name</th>
                     <th class="text-left py-3 px-3 text-gray-600 font-semibold">Type</th>
-                    <!-- <th class="text-left py-3 px-3 text-gray-600 font-semibold">Width</th> -->
-                    <!-- <th class="text-left py-3 px-3 text-gray-600 font-semibold">Height</th> -->
                     <th class="text-left py-3 px-3 text-gray-600 font-semibold">RFID Tag</th>
                     <th class="text-left py-3 px-3 text-gray-600 font-semibold">Status</th>
                     <th class="text-left py-3 px-3 text-gray-600 font-semibold">Expected delivery</th>
@@ -165,7 +159,8 @@
                         <%= element.expected_installation %>
                       </td>
                       <td class="py-3 px-3 text-right">
-                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium mr-3">Edit</button>
+                        <button onclick="editElement('<%= element.dbId %>')"
+                          class="text-blue-600 hover:text-blue-800 text-sm font-medium mr-3">Edit</button>
                         <button class="text-red-600 hover:text-red-800 text-sm font-medium">Remove</button>
                       </td>
                     </tr>
@@ -273,34 +268,75 @@
 
   <div id="overlay"></div>
 
-  <!-- Modal add element -->
-  <div id="addElementModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <!-- Modal edit element -->
+  <div id="editElementModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
       <div class="border-b border-gray-200 px-6 py-4">
-        <h3 class="text-lg font-semibold text-gray-800">Add New Element</h3>
+        <h3 class="text-lg font-semibold text-gray-800">Edit Element Logistics</h3>
+        <p id="editElementName" class="text-sm text-gray-500 mt-1"></p>
       </div>
       <div class="p-6 space-y-4">
+        <!-- RFID Tag -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Prefabricated Name</label>
-          <input type="text" id="elementNameInput" placeholder="Enter prefabricated name"
+          <label class="block text-sm font-medium text-gray-700 mb-2">RFID Tag</label>
+          <select id="editElementRfidTag"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Select RFID Tag</option>
+          </select>
+          <p class="text-xs text-gray-500 mt-1">Select the RFID tag assigned to this element</p>
+        </div>
+
+        <!-- Width -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Width (m)</label>
+          <input type="number" id="editElementWidth" step="0.01" placeholder="Enter width in meters"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
+
+        <!-- Height -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Associated Tag</label>
-          <select id="elementTagSelect"
+          <label class="block text-sm font-medium text-gray-700 mb-2">Height (m)</label>
+          <input type="number" id="editElementHeight" step="0.01" placeholder="Enter height in meters"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="">Select a tag</option>
+        </div>
+
+        <!-- Expected Delivery Date -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Expected Delivery Date</label>
+          <input type="date" id="editElementDeliveryDate"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <p class="text-xs text-gray-500 mt-1">When is this element expected to arrive on site?</p>
+        </div>
+
+        <!-- Expected Installation Date -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Expected Installation Date</label>
+          <input type="date" id="editElementInstallationDate"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <p class="text-xs text-gray-500 mt-1">When is this element scheduled to be installed?</p>
+        </div>
+
+        <!-- Status -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+          <select id="editElementStatus"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="Not started">Not Started</option>
+            <option value="In factory">In factory</option>
+            <option value="In transit">In transit</option>
+            <option value="On-site">On-site</option>
+            <option value="Installed">Installed</option>
           </select>
         </div>
       </div>
       <div class="border-t border-gray-200 px-6 py-4 flex justify-end space-x-3">
-        <button id="cancelElementBtn"
+        <button id="cancelEditElementBtn"
           class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
           Cancel
         </button>
-        <button id="confirmElementBtn"
+        <button id="confirmEditElementBtn"
           class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-          Add Element
+          Save Changes
         </button>
       </div>
     </div>
