@@ -1,6 +1,6 @@
 import express from 'express';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, getDoc, addDoc, doc, writeBatch, updateDoc, deleteDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, getDoc, addDoc, doc, writeBatch, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -54,6 +54,28 @@ router.patch('/api/components/rfidTags/:id', async (req, res, next) => {
     next(err);
   }
 });
+
+router.post('/api/components/rfidTags/associate', async (req, res, next) => {
+  try {
+    const physicalTagId = req.body.tagId;
+    const operation = req.body.operation; // 'associate' or 'dissociate'
+    const used = operation === 'associate' ? true : false;
+
+    const tagRef = collection(db, 'rfid_tag');
+    const q = query(tagRef, where('rfid_id', '==', physicalTagId));
+
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      return res.status(404).json({ error: 'RFID tag not found' });
+    }
+    const tagDoc = querySnapshot.docs[0];
+
+    await updateDoc(tagDoc.ref, { used });
+    res.json({ message: 'RFID tag associated successfully.' });
+  } catch (err) {
+    next(err);
+  }
+})
 
 router.delete('/api/components/rfidTags/:id', async (req, res, next) => {
   try {

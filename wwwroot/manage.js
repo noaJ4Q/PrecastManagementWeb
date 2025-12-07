@@ -1,3 +1,5 @@
+const dataContainer = document.getElementById('app-data');
+
 let currentEditingElement = null;
 
 const addTagBtn = document.getElementById('addTagBtn');
@@ -15,8 +17,6 @@ const editElementStatus = document.getElementById('editElementStatus');
 // Reference to add tag modal
 const tagIdInput = document.getElementById('tagIdInput');
 
-const confirmTagBtn = document.getElementById('confirmTagBtn');
-
 // Edit element function
 window.editElement = async function (dbId) {
   console.log('Editing element with dbId:', dbId);
@@ -31,10 +31,10 @@ window.editElement = async function (dbId) {
 
     // Populate modal fields
     editElementName.textContent = currentEditingElement.name || '';
-    editElementWidth.textContent = currentEditingElement.width || '';
-    editElementHeight.textContent = currentEditingElement.height || '';
-    editElementDeliveryDate.textContent = currentEditingElement.delivery_date || '';
-    editElementInstallationDate.textContent = currentEditingElement.expected_installation || '';
+    editElementWidth.value = currentEditingElement.width || '';
+    editElementHeight.value = currentEditingElement.height || '';
+    editElementDeliveryDate.value = currentEditingElement.expected_delivery || '';
+    editElementInstallationDate.value = currentEditingElement.expected_installation || '';
     // Set status select
     for (let i = 0; i < editElementStatus.options.length; i++) {
       if (editElementStatus.options[i].value === currentEditingElement.status) {
@@ -52,6 +52,13 @@ window.editElement = async function (dbId) {
     for (let i = 1; i < tags.length + 1; i++) {
       editElementRfidTag.options[i] = new Option(tags[i - 1].rfid_id, tags[i - 1].rfid_id);
     }
+    // Set selected RFID tag
+    for (let i = 0; i < editElementRfidTag.options.length; i++) {
+      if (editElementRfidTag.options[i].value === currentEditingElement.rfid_tag) {
+        editElementRfidTag.selectedIndex = i;
+        break;
+      }
+    }
 
     showModal(editElementModal);
 
@@ -61,6 +68,7 @@ window.editElement = async function (dbId) {
   }
 }
 
+// Remove tag function
 window.removeTag = async function (id) {
   try {
     const resp = await fetch(`/api/components/rfidTags/${id}`, {
@@ -70,7 +78,7 @@ window.removeTag = async function (id) {
       throw new Error(await resp.text());
     }
     console.log('Tag removed successfully');
-    // TODO: Update the table to remove the deleted tag
+    updateTagsTable();
   }
   catch (err) {
     alert('Could not remove RFID tag. See the console for more details.');
@@ -84,6 +92,14 @@ function showModal(modal) {
 
 function hideModal(modal) {
   modal.classList.add('hidden');
+}
+
+function updateTagsTable() {
+  window.location.reload();
+}
+
+function updateElementsTable() {
+  window.location.reload();
 }
 
 // Event listeners to open modals
@@ -113,8 +129,7 @@ document.getElementById('confirmTagBtn').addEventListener('click', async () => {
     const result = await resp.json();
     console.log('Tag added with ID:', result.id);
     hideModal(addTagModal);
-
-    // TODO: Update the RFID tags table to include the new tag
+    updateTagsTable();
 
   } catch (err) {
     alert('Could not add RFID tag. See the console for more details.');
@@ -147,10 +162,24 @@ document.getElementById('confirmEditElementBtn').addEventListener('click', async
     }
     console.log('Element updated successfully');
 
-    // TODO: Update the element in the table
-    // TODO: Updadte RFID tag association
-    // TODO: Update RFID tags in the table
+    // Updadte RFID tag association
 
+    const operation = updatedElement.rfid_tag ? 'associate' : 'dissociate';
+    const tagId = updatedElement.rfid_tag || currentEditingElement.rfid_tag;
+
+    const respTag = await fetch('/api/components/rfidTags/associate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ tagId, operation })
+    });
+    if (!respTag.ok) {
+      throw new Error(await respTag.text());
+    }
+    console.log('RFID tag associated successfully');
+
+    updateElementsTable();
     hideModal(editElementModal);
     currentEditingElement = null;
 
