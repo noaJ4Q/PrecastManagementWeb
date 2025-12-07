@@ -1,6 +1,6 @@
 import express from 'express';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, getDoc, addDoc, doc, writeBatch, updateDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, getDoc, addDoc, doc, writeBatch, updateDoc, deleteDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -16,6 +16,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let router = express.Router();
+
+// RFID tag routes
 
 router.get('/api/components/rfidTags', async (req, res, next) => {
   try {
@@ -39,6 +41,32 @@ router.post('/api/components/rfidTags', async (req, res, next) => {
     next(err);
   }
 });
+
+router.patch('/api/components/rfidTags/:id', async (req, res, next) => {
+  try {
+    const tagId = req.params.id;
+    const updatedData = req.body;
+
+    const tagRef = doc(db, 'rfid_tag', tagId);
+    await updateDoc(tagRef, updatedData);
+    res.json({ message: 'RFID tag updated successfully.' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete('/api/components/rfidTags/:id', async (req, res, next) => {
+  try {
+    const tagId = req.params.id;
+    const tagRef = doc(db, 'rfid_tag', tagId);
+    await deleteDoc(tagRef);
+    res.json({ message: 'RFID tag deleted successfully.' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Element routes
 
 router.get('/api/components/elements', async (req, res, next) => {
   try {

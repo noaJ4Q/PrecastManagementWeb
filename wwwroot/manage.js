@@ -61,6 +61,23 @@ window.editElement = async function (dbId) {
   }
 }
 
+window.removeTag = async function (id) {
+  try {
+    const resp = await fetch(`/api/components/rfidTags/${id}`, {
+      method: 'DELETE'
+    });
+    if (!resp.ok) {
+      throw new Error(await resp.text());
+    }
+    console.log('Tag removed successfully');
+    // TODO: Update the table to remove the deleted tag
+  }
+  catch (err) {
+    alert('Could not remove RFID tag. See the console for more details.');
+    console.error(err);
+  }
+}
+
 function showModal(modal) {
   modal.classList.remove('hidden');
 }
@@ -96,7 +113,9 @@ document.getElementById('confirmTagBtn').addEventListener('click', async () => {
     const result = await resp.json();
     console.log('Tag added with ID:', result.id);
     hideModal(addTagModal);
-    loadRfidTags();
+
+    // TODO: Update the RFID tags table to include the new tag
+
   } catch (err) {
     alert('Could not add RFID tag. See the console for more details.');
     console.error(err);
